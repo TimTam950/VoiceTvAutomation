@@ -12,6 +12,7 @@ def parse_episode(command: list) -> list:
     first_number = int(numbers_from_input[0])
     return first_number
 
+
 def full_screen(width, height):
     pyautogui.moveTo(width * (1475 / 1920), height * (927 / 1080))
     pyautogui.click()
@@ -20,7 +21,7 @@ def full_screen(width, height):
 def main():
     width, height = pyautogui.size()
     r = sr.Recognizer()
-    lookup = {"episode": 0}
+    lookup = {"episode": 0, "paused": False}
     while True:
         try:
             with sr.Microphone(device_index=1) as audio_source:
@@ -38,6 +39,7 @@ def main():
                     pyautogui.click()
                     full_screen(width, height)
                 elif "next" in text:
+                    pyautogui.press('esc')
                     pyautogui.moveTo(width - 10, 0, duration=.5)
                     pyautogui.click()
                     lookup['episode'] = lookup['episode'] + 1
@@ -47,6 +49,16 @@ def main():
                     pyautogui.moveTo(width * 3 / 4, height / 3, duration=5)
                     pyautogui.click()
                     full_screen(width, height)
+                elif "pause" in text:
+                    if not lookup["paused"]:
+                        pyautogui.moveTo(width / 2, height / 2)
+                        pyautogui.click()
+                        lookup["paused"] = True
+                elif "play" in text:
+                    if lookup["paused"]:
+                        pyautogui.moveTo(width / 2, height / 2)
+                        pyautogui.click()
+                        lookup["paused"] = False
         except Exception as e:
             print(e)
 
